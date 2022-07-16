@@ -1,0 +1,25 @@
+target/
+!.mvn/wrapper/maven-wrapper.jar
+!**/src/main/**/target/
+!**/src/test/**/target/
+
+### Configs or Env
+src/main/resources/application.properties
+
+### Generated
+.apt_generated
+.classpath
+.factorypath
+.project
+.settings
+.springBeans
+.sts4-cache
+
+### Idea
+.idea
+*.iws
+*.iml
+*.ipr
+
+### VSCode
+.vscode/
