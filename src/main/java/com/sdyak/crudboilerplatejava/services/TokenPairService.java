@@ -1,11 +1,10 @@
-package com.sdyak.crudboilerplatejava.modules.auth.services;
+package com.sdyak.crudboilerplatejava.services;
 
-import com.sdyak.crudboilerplatejava.misc.dto.TokenPairDTO;
-import com.sdyak.crudboilerplatejava.misc.exceptions.ConflictException;
-import com.sdyak.crudboilerplatejava.modules.db.model.RefreshToken;
-import com.sdyak.crudboilerplatejava.modules.db.model.User;
-import com.sdyak.crudboilerplatejava.modules.db.repository.RefreshTokenRepository;
-import com.sdyak.crudboilerplatejava.modules.user.UserService;
+import com.sdyak.crudboilerplatejava.dto.TokenPairDTO;
+import com.sdyak.crudboilerplatejava.exceptions.ConflictException;
+import com.sdyak.crudboilerplatejava.model.RefreshToken;
+import com.sdyak.crudboilerplatejava.model.User;
+import com.sdyak.crudboilerplatejava.repository.RefreshTokenRepository;
 import io.jsonwebtoken.JwtBuilder;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -44,12 +43,10 @@ public class TokenPairService {
         jwtBuilder.addClaims(tokenData);
         String jwtKey = environment.getProperty("jwt.secretkey");
 
-        String accessToken = jwtBuilder.signWith(SignatureAlgorithm.HS512, jwtKey).compact();
+        String accessToken = jwtBuilder.signWith(SignatureAlgorithm.HS256, jwtKey).compact();
         RefreshToken refreshToken = new RefreshToken(UUID.randomUUID().toString(), user);
         refreshTokenRepository.save(refreshToken);
 
         return new TokenPairDTO(accessToken, refreshToken.getRefreshToken());
     }
-
-
 }

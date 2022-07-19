@@ -1,4 +1,4 @@
-package com.sdyak.crudboilerplatejava.misc.exceptions;
+package com.sdyak.crudboilerplatejava.exceptions;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;

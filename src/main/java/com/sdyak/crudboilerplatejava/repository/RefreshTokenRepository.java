@@ -1,7 +1,7 @@
-package com.sdyak.crudboilerplatejava.modules.db.repository;
+package com.sdyak.crudboilerplatejava.repository;
 
-import com.sdyak.crudboilerplatejava.modules.db.model.RefreshToken;
-import com.sdyak.crudboilerplatejava.modules.db.model.User;
+import com.sdyak.crudboilerplatejava.model.RefreshToken;
+import com.sdyak.crudboilerplatejava.model.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface RefreshTokenRepository extends JpaRepository<RefreshToken, Long> {

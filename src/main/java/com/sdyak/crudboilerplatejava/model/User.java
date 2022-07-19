@@ -1,11 +1,13 @@
-package com.sdyak.crudboilerplatejava.modules.db.model;
+package com.sdyak.crudboilerplatejava.model;
 
 import lombok.*;
+import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
 import javax.validation.constraints.Email;
 import java.io.Serializable;
+import java.util.Date;
 
 @Getter
 @Setter
@@ -14,6 +16,15 @@ import java.io.Serializable;
 @Entity
 @Table(name = "users")
 public class User implements Serializable {
+    public User(String firstname, String lastname, String username, String email, String salt, String hash) {
+        this.firstname = firstname;
+        this.lastname = lastname;
+        this.username = username;
+        this.email = email;
+        this.salt = salt;
+        this.hashedPassword = hash;
+    }
+
     @Id
     @GeneratedValue(generator = "UUID")
     @GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
@@ -34,20 +45,18 @@ public class User implements Serializable {
     private String email;
 
     @Column(name = "salt")
-    private byte[] salt;
+    private String salt;
 
     @Column(name = "password")
     private String hashedPassword;
 
+    @CreationTimestamp
+    @Temporal(TemporalType.TIMESTAMP)
+    @Column(name = "created_at", nullable = false)
+    private Date createdAt;
+
     @OneToOne(mappedBy = "user")
     private RefreshToken refreshToken;
 
-    public User(String firstname, String lastname, String username, String email, byte[] salt, String hash) {
-        this.firstname = firstname;
-        this.lastname = lastname;
-        this.username = username;
-        this.email = email;
-        this.salt = salt;
-        this.hashedPassword = hash;
-    }
+
 }

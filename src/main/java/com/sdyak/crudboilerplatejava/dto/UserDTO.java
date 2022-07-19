@@ -1,4 +1,4 @@
-package com.sdyak.crudboilerplatejava.misc.dto;
+package com.sdyak.crudboilerplatejava.dto;
 
 import lombok.Data;
 import javax.validation.constraints.Email;
