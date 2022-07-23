@@ -1,9 +1,9 @@
-package com.sdyak.crudboilerplatejava.controller;
+package crudboilerplatejava.controller;
 
-import com.sdyak.crudboilerplatejava.dto.LoginDTO;
-import com.sdyak.crudboilerplatejava.dto.TokenPairDTO;
-import com.sdyak.crudboilerplatejava.dto.UserDTO;
-import com.sdyak.crudboilerplatejava.services.AuthService;
+import crudboilerplatejava.dto.LoginDTO;
+import crudboilerplatejava.dto.TokenPairDTO;
+import crudboilerplatejava.dto.UserDTO;
+import crudboilerplatejava.services.AuthService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 
 @RestController
+@RequestMapping("/auth")
 public class AuthController {
     private final AuthService authService;
 
@@ -27,7 +28,7 @@ public class AuthController {
 
     @RequestMapping(value = "/login", method = RequestMethod.POST)
     @ResponseStatus(HttpStatus.OK)
-    public TokenPairDTO login(@RequestBody LoginDTO cred) {
+    public TokenPairDTO login(@RequestBody LoginDTO  cred) {
         return authService.login(cred.getUsername(), cred.getPassword());
     }
 }

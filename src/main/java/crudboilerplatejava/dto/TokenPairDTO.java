@@ -1,4 +1,4 @@
-package com.sdyak.crudboilerplatejava.dto;
+package crudboilerplatejava.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

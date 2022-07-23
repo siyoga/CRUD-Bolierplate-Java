@@ -1,4 +1,4 @@
-package com.sdyak.crudboilerplatejava.model;
+package crudboilerplatejava.model;
 
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
@@ -6,8 +6,9 @@ import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
 import javax.validation.constraints.Email;
-import java.io.Serializable;
+import javax.validation.constraints.NotBlank;
 import java.util.Date;
+import java.util.List;
 
 @Getter
 @Setter
@@ -15,16 +16,7 @@ import java.util.Date;
 @RequiredArgsConstructor
 @Entity
 @Table(name = "users")
-public class User implements Serializable {
-    public User(String firstname, String lastname, String username, String email, String salt, String hash) {
-        this.firstname = firstname;
-        this.lastname = lastname;
-        this.username = username;
-        this.email = email;
-        this.salt = salt;
-        this.hashedPassword = hash;
-    }
-
+public class User {
     @Id
     @GeneratedValue(generator = "UUID")
     @GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
@@ -37,18 +29,26 @@ public class User implements Serializable {
     @Column(name = "lastname")
     private String lastname;
 
+    @NotBlank
     @Column(name = "username", nullable = false, unique = true)
     private String username;
 
+    @NotBlank
     @Email
-    @Column(name = "email", unique = true)
+    @Column(name = "email", nullable = false, unique = true)
     private String email;
 
-    @Column(name = "salt")
+    @NotBlank
+    @Column(name = "salt", nullable = false)
     private String salt;
 
-    @Column(name = "password")
+    @NotBlank
+    @Column(name = "password", nullable = false)
     private String hashedPassword;
+
+    @ElementCollection(fetch = FetchType.EAGER)
+    @Column(name = "roles")
+    private List<Role> roles;
 
     @CreationTimestamp
     @Temporal(TemporalType.TIMESTAMP)
@@ -58,5 +58,12 @@ public class User implements Serializable {
     @OneToOne(mappedBy = "user")
     private RefreshToken refreshToken;
 
-
+    public User(String firstname, String lastname, String username, String email, String salt, String hash) {
+        this.firstname = firstname;
+        this.lastname = lastname;
+        this.username = username;
+        this.email = email;
+        this.salt = salt;
+        this.hashedPassword = hash;
+    }
 }

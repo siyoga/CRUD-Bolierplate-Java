@@ -1,13 +1,14 @@
-package com.sdyak.crudboilerplatejava.services;
+package crudboilerplatejava.services;
 
-import com.sdyak.crudboilerplatejava.dto.UserDTO;
-import com.sdyak.crudboilerplatejava.exceptions.BadRequestException;
-import com.sdyak.crudboilerplatejava.exceptions.Pbkdf2NotFoundException;
-import com.sdyak.crudboilerplatejava.model.User;
-import com.sdyak.crudboilerplatejava.repository.UserRepository;
+import crudboilerplatejava.dto.UserDTO;
+import crudboilerplatejava.exceptions.ExceptionMessages;
+import crudboilerplatejava.exceptions.FlexibleException;
+import crudboilerplatejava.model.User;
+import crudboilerplatejava.repository.UserRepository;
 import lombok.SneakyThrows;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.env.Environment;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.Pbkdf2PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -17,28 +18,29 @@ import java.util.Random;
 
 @Service
 public class UserService {
-    private final Environment environment;
-    private final UserRepository userRepository;
-
-
     @Autowired
-    public UserService(UserRepository userRepository, Environment environment) {
-        this.userRepository = userRepository;
-        this.environment = environment;
-    }
+    UserRepository userRepository;
+
+    @Value("${jwt.secret}")
+    private String jwtSecret;
+
+    @Value("${pbkdf2.secret}")
+    private String pbkdf2Key;
+
+    ExceptionMessages exceptionMessages;
 
     @SneakyThrows
     public void create(UserDTO user) {
         User existUsername = userRepository.findUserByUsername(user.getUsername());
 
         if (existUsername != null) {
-            throw new BadRequestException("Username already taken");
+            throw new FlexibleException(exceptionMessages.usernameAlreadyTaken, HttpStatus.BAD_REQUEST);
         }
 
         User existEmail = userRepository.findUserByEmail(user.getEmail());
 
         if (existEmail != null) {
-            throw new BadRequestException("This email has already been used");
+            throw new FlexibleException(exceptionMessages.emailAlreadyTaken, HttpStatus.BAD_REQUEST);
         }
 
         User newUser = createEntity(user);
@@ -46,12 +48,6 @@ public class UserService {
     }
 
     public boolean checkPassword(String rawPassword, String salt, String hashedPassword) {
-        String pbkdf2Key = environment.getProperty("pbkdf2.secretkey");
-
-        if(pbkdf2Key == null) {
-            throw new Pbkdf2NotFoundException();
-        }
-
         Pbkdf2PasswordEncoder pbkdf2PasswordEncoder = new Pbkdf2PasswordEncoder(pbkdf2Key, 20000, 256);
         pbkdf2PasswordEncoder.setEncodeHashAsBase64(true);
         return pbkdf2PasswordEncoder.matches(rawPassword + salt, hashedPassword);
@@ -66,12 +62,6 @@ public class UserService {
     }
 
     private String hashPassword(String rawPassword) {
-        String pbkdf2Key = environment.getProperty("pbkdf2.secretkey");
-
-        if(pbkdf2Key == null) {
-            throw new Pbkdf2NotFoundException();
-        }
-
         Pbkdf2PasswordEncoder pbkdf2PasswordEncoder = new Pbkdf2PasswordEncoder(pbkdf2Key, 20000, 256);
         pbkdf2PasswordEncoder.setEncodeHashAsBase64(true);
         return pbkdf2PasswordEncoder.encode(rawPassword);

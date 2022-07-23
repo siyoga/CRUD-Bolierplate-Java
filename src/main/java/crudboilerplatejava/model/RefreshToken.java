@@ -1,4 +1,4 @@
-package com.sdyak.crudboilerplatejava.model;
+package crudboilerplatejava.model;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
